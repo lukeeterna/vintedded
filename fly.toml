@@ -6,8 +6,7 @@ app = "vintedded"
 primary_region = "fra"
 
 [build]
-  dockerfile = "services/api/Dockerfile"
-  context = "."
+  dockerfile = "Dockerfile"
 
 [deploy]
   strategy = "rolling"
