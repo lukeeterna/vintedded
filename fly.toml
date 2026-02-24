@@ -1,0 +1,61 @@
+# Fly.io configuration for Vinted Optimizer API
+# Root config that references services/api subdirectory
+# https://fly.io/docs/reference/configuration/
+
+app = "vintedded"
+primary_region = "fra"
+
+[build]
+  dockerfile = "services/api/Dockerfile"
+  context = "."
+
+[deploy]
+  strategy = "rolling"
+
+[env]
+  ENV = "production"
+  PORT = "8000"
+  LOG_LEVEL = "INFO"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[http_service.concurrency]
+  type = "requests"
+  hard_limit = 100
+  soft_limit = 80
+
+[[http_service.checks]]
+  grace_period = "10s"
+  interval = "30s"
+  method = "GET"
+  path = "/api/health"
+  timeout = "5s"
+
+[[http_service.checks]]
+  grace_period = "10s"
+  interval = "60s"
+  method = "GET"
+  path = "/api/ready"
+  timeout = "10s"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512
+
+[[metrics]]
+  port = 8000
+  path = "/metrics"
+
+# Secrets (set via: fly secrets set KEY=VALUE)
+# - DATABASE_URL
+# - REDIS_URL
+# - SECRET_KEY
+# - ENCRYPTION_KEY
+# - SENTRY_DSN
