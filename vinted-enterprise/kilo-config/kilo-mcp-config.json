@@ -1,0 +1,176 @@
+{
+  "_comment": "MCP Server Configuration per Kilo Code VS Code + GLM-4.7",
+  "_doc": "Posiziona in: progetto/.mcp.json (scope project) o ~/.mcp.json (scope user)",
+  "_setup": "Prerequisiti: Node.js 20+, Python 3.12+, uv, ollama",
+  
+  "mcpServers": {
+    
+    "_core_comment": "=== CORE SERVERS (sempre attivi) ===",
+    
+    "filesystem": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem"],
+      "env": {},
+      "_scope": "project",
+      "_description": "Lettura/scrittura files nel progetto - FONDAMENTALE"
+    },
+    
+    "git": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-git", "--repository", "."],
+      "env": {},
+      "_scope": "project",
+      "_description": "Git operations: commit, diff, log, branch"
+    },
+
+    "sequential-thinking": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "env": {},
+      "_scope": "user",
+      "_description": "Chain-of-thought per task complessi - raccomandato per GLM-4.7"
+    },
+
+    "_dev_comment": "=== DEV TOOLS ===",
+    
+    "github": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "_scope": "user",
+      "_description": "GitHub: issues, PRs, repos, Actions"
+    },
+
+    "postgres": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "POSTGRES_CONNECTION_STRING": "${DATABASE_URL}"
+      },
+      "_scope": "project",
+      "_description": "Query dirette su Neon PostgreSQL - per debugging schema"
+    },
+
+    "redis": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-redis"],
+      "env": {
+        "REDIS_URL": "${REDIS_URL}"
+      },
+      "_scope": "project",
+      "_description": "Inspect Upstash Redis cache"
+    },
+
+    "_ai_comment": "=== AI / RESEARCH TOOLS ===",
+
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "env": {},
+      "_scope": "user",
+      "_description": "Documentazione aggiornata librerie (FastAPI, Next.js, SQLAlchemy...)"
+    },
+
+    "fetch": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"],
+      "env": {},
+      "_scope": "user",
+      "_description": "Fetch URL per leggere docs, API specs, changelog"
+    },
+
+    "brave-search": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      },
+      "_scope": "user",
+      "_note": "Opzionale - richiede Brave Search API key (gratuita)",
+      "_description": "Web search per research tecnica"
+    },
+
+    "_vinted_comment": "=== VINTED OPTIMIZER CUSTOM SERVERS ===",
+
+    "vinted-api-inspector": {
+      "type": "stdio",
+      "command": "python3",
+      "args": ["scripts/mcp/api_inspector.py"],
+      "env": {
+        "API_BASE_URL": "http://localhost:8000",
+        "API_KEY": "${DEV_API_KEY}"
+      },
+      "_scope": "project",
+      "_description": "Inspect/test endpoints FastAPI locali durante sviluppo",
+      "_create": "Vedi scripts/mcp/api_inspector.py"
+    },
+
+    "vinted-db-analytics": {
+      "type": "stdio",
+      "command": "python3",
+      "args": ["scripts/mcp/db_analytics.py"],
+      "env": {
+        "DATABASE_URL": "${DATABASE_URL}"
+      },
+      "_scope": "project",
+      "_description": "Query analytics DB: vendite, trend, performance listing"
+    },
+
+    "_ops_comment": "=== OPERATIONS (opzionali) ===",
+
+    "fly-io": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@fly-io/mcp-server"],
+      "env": {
+        "FLY_API_TOKEN": "${FLY_API_TOKEN}"
+      },
+      "_scope": "user",
+      "_note": "Opzionale - richiede fly CLI installato",
+      "_description": "Deploy e monitoring Fly.io apps"
+    },
+
+    "docker": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["mcp-server-docker"],
+      "env": {},
+      "_scope": "user",
+      "_note": "Opzionale - richiede Docker Desktop",
+      "_description": "Gestione containers Docker locali"
+    },
+
+    "sentry": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@sentry/mcp-server@latest"],
+      "env": {
+        "SENTRY_AUTH_TOKEN": "${SENTRY_AUTH_TOKEN}",
+        "SENTRY_HOST": "https://sentry.io"
+      },
+      "_scope": "user",
+      "_description": "Inspect errori Sentry durante debug"
+    }
+  },
+
+  "_setup_instructions": {
+    "1_env_vars": "Aggiungi le variabili d'ambiente nel tuo shell profile (~/.zshrc o ~/.bashrc)",
+    "2_install_node": "brew install node (richiesto Node.js 20+)",
+    "3_install_python": "brew install python3 && pip install uv",
+    "4_install_ollama": "brew install ollama && brew services start ollama",
+    "5_pull_models": "ollama pull moondream2 && ollama pull phi3:mini && ollama pull nomic-embed-text",
+    "6_kilo_config": "In Kilo Code VS Code: Settings → API Provider → Z.ai → incolla Z.ai API key",
+    "7_verify_mcp": "In Kilo Code: apri Command Palette → 'Kilo Code: Show MCP Servers'"
+  }
+}
