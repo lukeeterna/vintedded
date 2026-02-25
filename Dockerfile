@@ -17,8 +17,9 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 WORKDIR /app
 
-# Copy dependency files
+# Copy dependency files and source
 COPY services/api/pyproject.toml services/api/README.md ./
+COPY services/api/src ./src
 
 # Install dependencies
 RUN uv pip install --system --no-cache .
